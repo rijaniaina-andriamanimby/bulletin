@@ -1,0 +1,39 @@
+# ------------------------------------
+# 1. Fichiers & Dossiers de Base Python
+# ------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ------------------------------------
+# 2. Environnement Virtuel
+# ------------------------------------
+venv/
+env/
+.venv/
+.python-version
+.env
+
+# ------------------------------------
+# 3. Fichiers Spécifiques à Django
+# ------------------------------------
+db.sqlite3                  # Base de données par défaut
+
+# Secrets & Configuration Locale
+.idea/                      # Fichiers de configuration PyCharm/IDEs
+
+# Dossiers d'Uploads & Fichiers Statiques
+/media/                     # Fichiers téléchargés par les utilisateurs
+/static/                    # Dossier de collecte (STATIC_ROOT)
+
+# Fichiers de Log et de Session
+*.log
+*.sqlite
+/sessions/
+
+# ------------------------------------
+# 4. Fichiers MacOS/Linux/Windows
+# ------------------------------------
+.DS_Store
+Thumbs.db
