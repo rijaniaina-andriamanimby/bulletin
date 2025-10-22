@@ -22,6 +22,7 @@ db.sqlite3                  # Base de données par défaut
 
 # Secrets & Configuration Locale
 .idea/                      # Fichiers de configuration PyCharm/IDEs
+.idea
 
 # Dossiers d'Uploads & Fichiers Statiques
 /media/                     # Fichiers téléchargés par les utilisateurs
