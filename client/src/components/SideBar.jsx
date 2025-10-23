@@ -55,7 +55,7 @@ const SideBar = () => {
               </div>
               <NavItem to="/application" label="Tableau de bord" icon={Home} />
               <NavItem to="classe" label="Classe" icon={School} />
-              <NavItem to="eleve" label="Eléve" icon={GraduationCap} />
+              <NavItem to="eleve" label="Elève" icon={GraduationCap} />
               <NavItem to="enseignant" label="Enseignant" icon={UserPen} />
               <NavItem to="matiere" label="Matière" icon={BookText} />
               <NavItem to="note" label="Note" icon={BookCheck} />

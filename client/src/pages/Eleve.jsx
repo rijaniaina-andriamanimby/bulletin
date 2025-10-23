@@ -1,18 +1,22 @@
 import React, { use, useEffect, useState } from 'react'
 import SearchInput from '../components/SearchInput'
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Filter } from "lucide-react";
 import api from '../service/api'
 import DataTable from '../components/DataTable'
 import FeedbackService from '../service/FeedBackService'
+import EleveForm from '../components/form/EleveForm';
 
 const Eleve = () => {
   const [eleves, setEleves] = useState([])
   const [selectedEleve, setSelectedEleve] = useState({
-    id: '', nom: '', prenom: '', genre: '', date_naissance: '', numero_inscription: '', classe: ''
+    id: '', nom: '', prenom: '', genre: '', naissance: '', matricule: '', classe: ''
   })
   const [openModal, setOpenModal] = useState(false)
   const [filteredEleves, setFilteredEleves] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [classes, setClasses] = useState([])
+  const [classeFilter, setClasseFilter] = useState('')
+  const [genreFilter, setGenreFilter] = useState('')
 
   {/** Pour récupérer les données depuis l'API */ }
   const fetchEleves = async () => {
@@ -25,20 +29,26 @@ const Eleve = () => {
     }
   }
 
+  {/** Fonctions pour avoir les données via l'API */ }
+  const fetcClasses = async () => {
+    const response = await api.get('/classes/')
+    setClasses(response.data)
+  }
+
   {/** Définition des colonnes pour le tableau */ }
   const tableHeader = [
     { key: 'id', label: 'ID' },
     { key: 'nom', label: 'Nom' },
     { key: 'prenom', label: 'Prénoms' },
     { key: 'genre', label: 'Genre' },
-    { key: 'date_naissance', label: 'Date de naissance' },
-    { key: 'numero_inscription', label: 'Matricule' },
+    { key: 'naissance', label: 'Date de naissance' },
+    { key: 'matricule', label: 'Matricule' },
     { key: 'classe', label: 'Classe' }
   ]
 
   {/** Fonction executer lorqu'on clique sur le bouton modifier */ }
-  const handleEdit = (classe) => {
-    selectedEleve(classe)
+  const handleEdit = (eleve) => {
+    setSelectedEleve(eleve)
     setOpenModal(true)
   }
 
@@ -46,9 +56,15 @@ const Eleve = () => {
   const updateEleve = async (eleve) => {
     try {
       const response = await api.put(`/eleves/${eleve.id}`, eleve)
-      selectedEleve([...eleves, response.data])
-      setOpenModal(false)
-      setSelectedEleve({ id: '', nom: '', prenom: '', genre: '', date_naissance: '', numero_inscription: '', classe: '' })
+      setFilteredEleves((prev) => prev.map((value) => {
+        if (value.id === selectedEleve.id) {
+          return response.data
+        }
+        else {
+          return value
+        }
+      }))
+      onClose()
       FeedbackService.success()
     } catch (error) {
       console.log(error)
@@ -60,8 +76,8 @@ const Eleve = () => {
     try {
       const response = await api.post('/eleves/', eleve)
       setFilteredEleves([...eleves, response.data])
-      setOpenModal(false)
-      setSelectedEleve({ id: '', nom: '', prenom: '', genre: '', date_naissance: '', numero_inscription: '', classe: '' })
+      setEleves([...eleves, response.data])
+      onClose()
       FeedbackService.success()
     } catch (error) {
       console.log(error)
@@ -72,16 +88,16 @@ const Eleve = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (selectedEleve.id) {
-      updateClasse(selectedEleve)
+      updateEleve(selectedEleve)
     } else {
-      addClasse(selectedEleve)
+      addEleve(selectedEleve)
     }
   }
 
   {/** Quand on change quelque chose dans le formulaire */ }
   const handleChange = (e) => {
     setSelectedEleve({ ...selectedEleve, [e.target.name]: e.target.value })
-    console.log(selectedClasse.nom)
+    console.log(selectedEleve.nom)
   }
 
   {/** Fonction executer lors de la suppression */ }
@@ -90,7 +106,7 @@ const Eleve = () => {
       const confirm = await FeedbackService.confirm()
       if (confirm) {
         await api.delete(`/eleves/${id}`)
-        setFilteredEleves(eleves.filter((eleve) => eleve.id !== id))
+        fetchEleves()
         FeedbackService.success()
       }
     } catch (error) {
@@ -100,40 +116,112 @@ const Eleve = () => {
 
   {/** Filtrer les données selon ce que l'utilisateur recherche */ }
   useEffect(() => {
-    const result = eleves.filter(
-      (eleve) => eleve.nom.toLowerCase().includes(searchTerm.toLowerCase())
+  let result = [...eleves] // copie de la liste d'origine
+
+  // Filtre par recherche (nom ou prénom)
+  if (searchTerm.trim() !== "") {
+    result = result.filter(
+      (eleve) =>
+        eleve.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        eleve.prenom.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    setFilteredEleves(result)
-  }, [searchTerm])
+  }
+
+  // Filtre par classe
+  if (classeFilter) {
+    result = result.filter((eleve) => {
+      // ⚠️ Si eleve.classe est un objet (ex: {id: 2, nom: "3ème A"})
+      return eleve.classe?.id === parseInt(classeFilter)
+    })
+  }
+
+  // Filtre par genre
+  if (genreFilter && genreFilter !== "Tous") {
+    result = result.filter((eleve) => eleve.genre === genreFilter)
+  }
+
+  // Met à jour le tableau affiché
+  setFilteredEleves(result)
+}, [searchTerm, classeFilter, genreFilter, eleves])
+
+  {/** Lorsqu'on annule ou ferme le formulaire */ }
+  const onClose = () => {
+    setOpenModal(false)
+    setSelectedEleve({ id: '', nom: '', prenom: '', genre: '', naissance: '', matricule: '', classe: '' })
+  }
 
   {/** Fonction executer quand le composant est monté */ }
   useEffect(() => {
     fetchEleves()
+    fetcClasses()
   }, [])
   return (
     <div className='h-screen bg-gray-50 p-6'>
       {/** En tete du page */}
       <div className="max-w-7xl mx-auto">
-        <div className='flex shadow px-3 p-4 rounded-2xl items-center justify-between'>
+        <div className='flex px-3 p-4 items-center justify-between bg-white rounded-2xl shadow-sm border border-gray-200'>
           <div className="">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Gestion des élèves</h1>
             <p className="text-gray-600">Gérez et suivez tous vos élèves dans votre établissement en un seul endroit</p>
           </div>
           <div className='flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between'>
-            <SearchInput search={searchTerm} setSearch={searchTerm} />
+            <SearchInput search={searchTerm} setSearch={setSearchTerm} />
             <button
+              onClick={() => setOpenModal(true)}
               className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-sm hover:bg-emerald-700 transition-colors font-medium">
               <PlusCircle size={20} />
               Ajouter un élève
             </button>
           </div>
         </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 flex-1 justify-between">
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <select
+                  value={classeFilter}
+                  onChange={(e)=>setClasseFilter(e.target.value)}
+                  className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white">
+                  <option value="">Toutes les classes</option>
+                  {
+                    classes.map((classe)=>(
+                      <option value={classe.id} key={classe.id}>{classe.nom}</option>
+                    ))
+                  }
+                </select>
+              </div>
+
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <select
+                  value={genreFilter}
+                  onChange={(e)=>setGenreFilter(e.target.value)}
+                  className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+                >
+                  <option value="Tous">Tous les genres</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/** Tableau de données */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-5">
+          <DataTable columns={tableHeader} data={filteredEleves} onDelete={handleDelete} onEdit={handleEdit} />
+        </div>
+
+        {
+          openModal && (
+            <EleveForm eleve={selectedEleve} handleChange={handleChange} handleSubmit={handleSubmit} onClose={onClose} classes={classes} />
+          )
+        }
+
       </div>
 
-      {/** Tableau de données */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <DataTable columns={tableHeader} data={filteredEleves} onDelete={handleDelete} onEdit={handleEdit} />
-      </div>
     </div>
   )
 }

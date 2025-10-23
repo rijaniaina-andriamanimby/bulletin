@@ -45,6 +45,7 @@ const Classe = () => {
       setSelectedClasse({id:"", nom:""})
       FeedbackService.success()
     } catch (error) {
+      FeedbackService.error()
       console.log(error)
     }
   }
@@ -58,6 +59,7 @@ const Classe = () => {
       setSelectedClasse({id:"", nom:""})
       FeedbackService.success()
     } catch (error) {
+      FeedbackService.error()
       console.log(error)
     }
   }
@@ -75,7 +77,6 @@ const Classe = () => {
   {/** Quand on change quelque chose dans le formulaire */}
   const handleChange = (e)=>{
     setSelectedClasse({...selectedClasse, [e.target.name]: e.target.value})
-    console.log(selectedClasse.nom)
   }
 
   {/** Fonction executer lors de la suppression */}

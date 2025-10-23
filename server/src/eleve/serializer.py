@@ -4,4 +4,4 @@ from .models import Eleve
 class EleveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Eleve
-        fields = ['id', 'prenom', 'nom', 'date_naissance', 'genre', 'numero_inscription', 'classe']
+        fields = ['id', 'prenom', 'nom', 'naissance', 'genre', 'matricule', 'classe']
