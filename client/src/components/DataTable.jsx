@@ -18,7 +18,7 @@ const DataTable = ({ columns, data, onEdit, onDelete }) => {
         <tbody className="divide-y divide-gray-200">
           {data.length === 0 ? (
             <tr className="">
-              <td colSpan={columns.length + 1} className="text-center py-4">
+              <td colSpan={columns.length + 1} className="px-6 py-12 text-center text-gray-500 text-lg font-medium">
                 Aucune donnée disponible
               </td>
             </tr>
@@ -26,7 +26,7 @@ const DataTable = ({ columns, data, onEdit, onDelete }) => {
             data.map((row) => (
               <tr key={row.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
                 {columns.map((col) => (
-                  <td key={col.key} className="px-6 py-4 text-sm font-medium text-gray-900">
+                  <td key={col.key} className="px-6 py-4 text-sm font-semibold text-gray-500 tracking-wide">
                     {row[col.key]}
                   </td>
                 ))}
