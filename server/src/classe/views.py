@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 class ClassView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def get(self, request, pk=None):
         if pk is None:
             classes = Classe.objects.all()
