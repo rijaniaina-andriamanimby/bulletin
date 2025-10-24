@@ -1,18 +1,23 @@
-import React, {use, useState, useEffect} from 'react'
+import React, { use, useState, useEffect } from 'react'
 import { PlusCircle } from 'lucide-react'
 import SearchInput from '../components/SearchInput'
 import DataTable from '../components/DataTable'
+import BulletinForm from '../components/form/BulletinForm'
+import api from '../service/api'
+import FeedbackService from '../service/FeedBackService'
 
 const Bulletin = () => {
   const [bulletins, setBulletins] = useState([])
   const [filteredBulletin, setFilteredBulletin] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [searchterm, setSearchTerm] = useState('')
+  const [classes, setClasses] = useState([])
+  const [selectedBulletin, setSelectedBulletin] = useState({id: '', classe: '', session: ''})
 
   {/** Pour récupérer les données depuis l'API */ }
   const fetchBulletins = async () => {
     try {
-      const response = await api.get('/eleves/')
+      const response = await api.get('/notes/bulletin')
       setBulletins(response.data)
       setFilteredBulletin(response.data)
     } catch (error) {
@@ -20,7 +25,19 @@ const Bulletin = () => {
     }
   }
 
-    {/** Définition des colonnes pour le tableau */ }
+  {/** Pour récupérer les données des clés étrangère */ }
+  const fetchClasse = async () => {
+    try {
+      const responseClasses = await api.get('/classes/')
+      setClasses(responseClasses.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+  {/** Définition des colonnes pour le tableau */ }
   const tableHeader = [
     { key: 'id', label: 'ID' },
     { key: 'eleve', label: 'Elève' },
@@ -29,11 +46,44 @@ const Bulletin = () => {
     { key: 'appreciation', label: 'Appréciation' },
   ]
 
+  {/** Fonction executer lorsqu'on clique sur le bouton d'ajout ou modifier dans le formulaire */ }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log("Bulletin généré avec succès !")
+    console.log(selectedBulletin)
+  }
+
+  {/** Quand on change quelque chose dans le formulaire */ }
+  const handleChange = (e) => {
+    setSelectedBulletin({ ...selectedBulletin, [e.target.name]: e.target.value })
+  }
+
+  {/** Fonction executer lors de la suppression */ }
+  const handleDelete = async (id) => {
+    try {
+      const confirm = await FeedbackService.confirm()
+      if (confirm) {
+        await api.delete(`/notes/bulletin/${id}`)
+        fetchBulletins()
+        FeedbackService.success()
+      }
+    } catch (error) {
+      FeedbackService.error()
+    }
+  }
+
+    {/** Lorsqu'on annule ou ferme le formulaire */ }
+  const onClose = () => {
+    setOpenModal(false)
+    setSelectedBulletin({id: '', classe: '', session: ''})
+  }
+
   {/** Fonction executer quand le composant est monté */ }
-    useEffect(() => {
-      fetchBulletins()
-    }, [])
-    
+  useEffect(() => {
+    fetchBulletins()
+    fetchClasse()
+  }, [])
+
   return (
     <div className='h-screen bg-gray-50 p-6'>
       <div className="max-w-7xl mx-auto">
@@ -64,12 +114,24 @@ const Bulletin = () => {
           </div>
         </div>
         {/* Bouton filtre */}
-        
+
       </div>
       {/** Tableau de données */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-5">
-        <DataTable data={filteredBulletin} columns={tableHeader}/>
+        <DataTable data={filteredBulletin} columns={tableHeader} onDelete={handleDelete}/>
       </div>
+
+      {
+        openModal && (
+          <BulletinForm 
+            bulletin={selectedBulletin} 
+            classe={classes} 
+            handleSubmit={handleSubmit} 
+            onClose={onClose} 
+            handleChange={handleChange}
+          />
+        )
+      }
     </div>
   )
 }
