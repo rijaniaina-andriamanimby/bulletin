@@ -43,7 +43,7 @@ const Eleve = () => {
     { key: 'genre', label: 'Genre' },
     { key: 'naissance', label: 'Date de naissance' },
     { key: 'matricule', label: 'Matricule' },
-    { key: 'classe', label: 'Classe' }
+    { key: 'nomClasse', label: 'Classe' }
   ]
 
   {/** Fonction executer lorqu'on clique sur le bouton modifier */ }
@@ -97,7 +97,6 @@ const Eleve = () => {
   {/** Quand on change quelque chose dans le formulaire */ }
   const handleChange = (e) => {
     setSelectedEleve({ ...selectedEleve, [e.target.name]: e.target.value })
-    console.log(selectedEleve.nom)
   }
 
   {/** Fonction executer lors de la suppression */ }
@@ -130,8 +129,7 @@ const Eleve = () => {
   // Filtre par classe
   if (classeFilter) {
     result = result.filter((eleve) => {
-      // ⚠️ Si eleve.classe est un objet (ex: {id: 2, nom: "3ème A"})
-      return eleve.classe?.id === parseInt(classeFilter)
+      return eleve.classe === parseInt(classeFilter)
     })
   }
 

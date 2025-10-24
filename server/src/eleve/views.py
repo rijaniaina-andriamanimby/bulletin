@@ -12,12 +12,12 @@ class EleveView(APIView):
         Return all eleves list
         """
         if pk is None:
-            eleves = Eleve.objects.all()
+            eleves = Eleve.objects.select_related('classe').all()
             serializer = EleveSerializer(eleves, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             try:
-                eleve = Eleve.objects.get(pk=pk)
+                eleve = Eleve.objects.select_related('classe').get(pk=pk)
                 serializer = EleveSerializer(eleve)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Eleve.DoesNotExist:
