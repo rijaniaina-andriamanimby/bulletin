@@ -9,19 +9,21 @@ from note.serializer import NoteSerializer
 class NoteView(APIView):
     def get(self, request, pk=None):
         if pk is None:
-            notes = Note.objects.all()
+            notes = Note.objects.select_related().all()
             serializer = NoteSerializer(notes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            note = Note.objects.get(pk=pk)
+            note = Note.objects.select_related().get(pk=pk)
             serializer = NoteSerializer(note)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = NoteSerializer(data=request.data)
+        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk=None):
