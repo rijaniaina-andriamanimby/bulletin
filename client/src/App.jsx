@@ -10,23 +10,27 @@ import Note from './pages/Note'
 import Layout from './layout/Layout'
 import Bulletin from './pages/Bulletin'
 import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/security/ProtectedRoute'
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-        <Route path='/' element={<Login/>}/>
-        <Route path='/application' element={<Layout/>}>
-          <Route index element ={<h1>Dashboard</h1>}/>
-          <Route path='classe' element={<Classe/>}/>
-          <Route path='eleve' element={<Eleve/>}/>
-          <Route path='enseignant' element={<Enseignant/>}/>
-          <Route path='matiere' element={<Matiere/>}/>
-          <Route path='note' element={<Note/>}/>
-          <Route path='bulletin' element={<Bulletin/>}/>
-        </Route>
-      </Routes>
+          <Route path='/' element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='/application' element={<Layout />}>
+              <Route index element={<h1>Dashboard</h1>} />
+              <Route path='classe' element={<Classe />} />
+              <Route path='eleve' element={<Eleve />} />
+              <Route path='enseignant' element={<Enseignant />} />
+              <Route path='matiere' element={<Matiere />} />
+              <Route path='note' element={<Note />} />
+              <Route path='bulletin' element={<Bulletin />} />
+            </Route>
+          </Route>
+
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   )
