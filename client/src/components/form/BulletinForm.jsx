@@ -1,6 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import BulletinPDF from '../pdf/BulletinPDF'
+import { calculerBulletins } from '../../service/BulletinService'
+import api from "../../service/api";
 
-const BulletinForm = ({bulletin, classe, handleChange, handleSubmit, onClose}) => {
+const BulletinForm = ({ classe, onClose, fetch }) => {
+    const [generatedData, setGeneratedData] = useState(null)
+    const [bulletin, setBulletin] = useState({ id: '', classe: '', session: '' })
+
+    {/** Quand on change quelque chose dans le formulaire */ }
+    const handleChange = (e) => {
+        setBulletin({ ...bulletin, [e.target.name]: e.target.value })
+    }
+
+    {/** Fonction executer lorsqu'on clique sur le bouton d'ajout ou modifier dans le formulaire */ }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const result = await calculerBulletins(bulletin.classe, bulletin.session, api)
+        console.log(result);
+        setGeneratedData(result)
+        fetch()
+        onclose
+    }
     return (
         <div className="fixed inset-0 bg-opacity-20 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -24,8 +45,8 @@ const BulletinForm = ({bulletin, classe, handleChange, handleSubmit, onClose}) =
                             Classe <span className="text-red-500">*</span>
                         </label>
                         <select
-                        value={bulletin.classe}
-                        onChange={handleChange}
+                            value={bulletin.classe}
+                            onChange={handleChange}
                             name="classe"
                             id="classe"
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors" required
@@ -56,6 +77,20 @@ const BulletinForm = ({bulletin, classe, handleChange, handleSubmit, onClose}) =
                             <option value="Trimestre 3">Trimestre 3</option>
                         </select>
                     </div>
+
+                    {generatedData && (
+                        <PDFDownloadLink
+                            document={<BulletinPDF bulletins={generatedData} />}
+                            fileName={`bulletin_${bulletin.session}.pdf`}
+                        >
+                            {({ loading }) => (
+                                <button className="text-sm underline mx-auto">
+                                    {loading ? 'Génération...' : 'Télécharger'}
+                                </button>
+                            )}
+                        </PDFDownloadLink>
+                    )}
+
                     <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                         <button
                             type="button"

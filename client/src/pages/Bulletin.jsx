@@ -12,7 +12,6 @@ const Bulletin = () => {
   const [openModal, setOpenModal] = useState(false)
   const [searchterm, setSearchTerm] = useState('')
   const [classes, setClasses] = useState([])
-  const [selectedBulletin, setSelectedBulletin] = useState({id: '', classe: '', session: ''})
 
   {/** Pour récupérer les données depuis l'API */ }
   const fetchBulletins = async () => {
@@ -46,18 +45,6 @@ const Bulletin = () => {
     { key: 'appreciation', label: 'Appréciation' },
   ]
 
-  {/** Fonction executer lorsqu'on clique sur le bouton d'ajout ou modifier dans le formulaire */ }
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Bulletin généré avec succès !")
-    console.log(selectedBulletin)
-  }
-
-  {/** Quand on change quelque chose dans le formulaire */ }
-  const handleChange = (e) => {
-    setSelectedBulletin({ ...selectedBulletin, [e.target.name]: e.target.value })
-  }
-
   {/** Fonction executer lors de la suppression */ }
   const handleDelete = async (id) => {
     try {
@@ -72,10 +59,9 @@ const Bulletin = () => {
     }
   }
 
-    {/** Lorsqu'on annule ou ferme le formulaire */ }
+  {/** Lorsqu'on annule ou ferme le formulaire */ }
   const onClose = () => {
     setOpenModal(false)
-    setSelectedBulletin({id: '', classe: '', session: ''})
   }
 
   {/** Fonction executer quand le composant est monté */ }
@@ -118,17 +104,15 @@ const Bulletin = () => {
       </div>
       {/** Tableau de données */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-5">
-        <DataTable data={filteredBulletin} columns={tableHeader} onDelete={handleDelete}/>
+        <DataTable data={filteredBulletin} columns={tableHeader} onDelete={handleDelete} />
       </div>
 
       {
         openModal && (
-          <BulletinForm 
-            bulletin={selectedBulletin} 
-            classe={classes} 
-            handleSubmit={handleSubmit} 
-            onClose={onClose} 
-            handleChange={handleChange}
+          <BulletinForm
+            fetch={fetchBulletins}
+            classe={classes}
+            onClose={onClose}
           />
         )
       }

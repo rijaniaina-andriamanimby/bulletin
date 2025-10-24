@@ -153,7 +153,7 @@ const Note = () => {
     // Filtre par classe
     if (classeFilter) {
       result = result.filter((note) => {
-        return note.classe === parseInt(classeFilter)
+        return note.classe === classeFilter
       })
     }
 
