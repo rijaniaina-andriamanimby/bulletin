@@ -198,31 +198,31 @@ const Note = () => {
     <div className='h-screen bg-gray-50 p-6'>
       <div className="max-w-7xl mx-auto">
         {/* En-tête de la page */}
-<div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white shadow px-5 py-4 rounded-2xl">
-  {/* Titre et description */}
-  <div>
-    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-      Gestion des notes
-    </h1>
-    <p className="text-gray-600 text-sm md:text-base">
-      Gérez et suivez toutes les notes de votre établissement en un seul endroit
-    </p>
-  </div>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white shadow px-5 py-4 rounded-2xl">
+          {/* Titre et description */}
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
+              Gestion des notes
+            </h1>
+            <p className="text-gray-600 text-sm md:text-base">
+              Gérez et suivez toutes les notes de votre établissement en un seul endroit
+            </p>
+          </div>
 
-  {/* Zone de recherche + bouton d’ajout */}
-  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-    {/* Champ de recherche */}
-    <SearchInput search={searchterm} setSearch={setSearchTerm} />
+          {/* Zone de recherche + bouton d’ajout */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            {/* Champ de recherche */}
+            <SearchInput search={searchterm} setSearch={setSearchTerm} />
 
-    {/* Bouton d’ajout */}
-    <button
-      onClick={() => setOpenModal(true)}
-      className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-lg shadow-sm hover:bg-emerald-700 transition-colors font-medium w-full sm:w-auto">
-      <PlusCircle size={20} />
-      <span>Ajouter une note</span>
-    </button>
-  </div>
-</div>
+            {/* Bouton d’ajout */}
+            <button
+              onClick={() => setOpenModal(true)}
+              className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-lg shadow-sm hover:bg-emerald-700 transition-colors font-medium w-full sm:w-auto">
+              <PlusCircle size={20} />
+              <span>Ajouter une note</span>
+            </button>
+          </div>
+        </div>
         {/* Bouton filtre */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 mt-5">
           <div className="flex flex-col gap-6">

@@ -153,6 +153,7 @@ const Eleve = () => {
     fetchEleves()
     fetcClasses()
   }, [])
+  
   return (
     <div className='h-screen bg-gray-50 p-6'>
       {/** En tete du page */}

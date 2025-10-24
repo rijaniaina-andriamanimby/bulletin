@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from note.models import Note
+from note.models import Note, Bulletin
 
 
 class NoteSerializer(serializers.ModelSerializer):
@@ -10,13 +10,8 @@ class NoteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Note
-        fields = [
-            'id', 'eleve', 'matiere',
-            'session', 'typeNote', 'valeur',
-            'coefficient', 'enseignant', 'nomEleveComplet',
-            'classe', 'nomEnseignantComplet', 'matiereNom'
-        ]
-
+        fields = ['id', 'eleve', 'matiere','session', 'typeNote', 'valeur','coefficient',
+                  'enseignant', 'nomEleveComplet','classe', 'nomEnseignantComplet', 'matiereNom']
 
     def get_nomEnseignantComplet(self, obj):
         if obj.enseignant:
@@ -26,4 +21,16 @@ class NoteSerializer(serializers.ModelSerializer):
     def get_nomEleveComplet(self, obj):
         if obj.eleve:
             return f"{obj.eleve.nom} {obj.eleve.prenom}"
+        return None
+
+class BulletinSerializer(serializers.ModelSerializer):
+    nomEleveComplet = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Bulletin
+        fields = ['id', 'eleve', 'session', 'moyenne_generale', 'appreciation', 'nomEleveComplet']
+
+    def get_nomEnseignantComplet(self, obj):
+        if obj.enseignant:
+            return f"{obj.enseignant.nom} {obj.enseignant.prenom}"
         return None
