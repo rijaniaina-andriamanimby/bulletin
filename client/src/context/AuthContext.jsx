@@ -1,62 +1,58 @@
-import { useState,useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
+import api from "../service/api";
 
+const AuthContext = createContext();
 
-// 1. Create an empty "box" (context)
-const AuthContext = createContext()
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-export const AuthProvider = ({children}) =>{
-    // 2. State to track if user is logged in
-    const [user, setUser] = useState(null);
-    // 3. State to track loading (e.g., checking localStorage)
-    const [loading, setLoading] = useState(true);
-    // 4. Check localStorage for existing user on app load
-    useEffect(()=>{
-        const storedUser = localStorage.getItem('user');
-        if(storedUser){
-            setUser(JSON.parse(storedUser)); 
-        }
-        setLoading(false);  // Done checking
-    },[]);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
+  }, []);
 
-    // 5. Login function (store user/tokens in localStorage)
-    const login = async (credentials)=>{
-        // Send username/password to backend
-        try{
-        console.log(BASE_URL)
-        console.log(credentials)
-        console.log(`Making request to: ${BASE_URL}/token/`);
+  const login = async (credentials) => {
+    try {
+      const response = await api.post(`/token/`, {
+        email: credentials.email,
+        password: credentials.password,
+      });
 
-        const response = await axios.post(`${BASE_URL}/token/`, credentials);
-        const { access, refresh } = response.data;
-        console.log(response.data)
-        // Save tokens and user data in localStorage (like a fridge)
-        localStorage.setItem('access_token',access);
-        localStorage.setItem('refresh_token',refresh);
-        localStorage.setItem('user', JSON.stringify(user));
-        }catch(error){
-            console.error("Login failed:", error); // ✅ Log errors
-            if (error.response) {
-                console.error("Response data:", error.response.data);
-                console.error("Response status:", error.response.status);
-            } else {
-                console.error("Network error or no response received.");
-            }
-        }
+      const { access, refresh, user: userData } = response.data;
 
-        // Update the "box" (context) with the user
-        setUser(user);
-    };
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+      localStorage.setItem("user", JSON.stringify(userData));
 
-    // 7. Provide the "box" to all components
+      setUser(userData);
+    } catch (error) {
+      console.error("Erreur de connexion :", error);
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    const refresh_token = localStorage.getItem("refresh_token");
+
+    try {
+      await api.post(`/deconnexion/`, { refresh_token });
+    } catch (err) {
+      console.warn("Erreur à la déconnexion :", err);
+    }
+
+    localStorage.clear();
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{  login}}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
+};
 
-}
-
-// 3. Create the `useAuth` hook (the "way to open the box")
-export const useAuth = () => {
-    return useContext(AuthContext);
-  };
+export const useAuth = () => useContext(AuthContext);

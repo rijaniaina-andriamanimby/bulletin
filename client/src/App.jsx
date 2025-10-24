@@ -9,11 +9,13 @@ import Matiere from './pages/Matiere'
 import Note from './pages/Note'
 import Layout from './layout/Layout'
 import Bulletin from './pages/Bulletin'
+import { AuthProvider } from './context/AuthContext'
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
+      <AuthProvider>
+        <Routes>
         <Route path='/' element={<Login/>}/>
         <Route path='/application' element={<Layout/>}>
           <Route index element ={<h1>Dashboard</h1>}/>
@@ -25,6 +27,7 @@ const App = () => {
           <Route path='bulletin' element={<Bulletin/>}/>
         </Route>
       </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

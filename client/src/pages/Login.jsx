@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 
 const Login = () => {
-    const [credentials, setCredentials] = useState({
-        username: '',
-        password: '',
-    });
+    const { login } = useAuth();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            await login({email, password})
+            console.log('con')
+        } catch (error) {
+            console.log('nom')
+        }
         console.log('form submitted')
     }
 
@@ -24,10 +30,11 @@ const Login = () => {
                             Username
                         </label>
                         <input
+                        type='email'
                             className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder='Username'
-                            value={credentials.username}
-                            onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
@@ -36,10 +43,11 @@ const Login = () => {
                             Password
                         </label>
                         <input
+                        type='password'
                             className="border border-gray-300 appearance-none rounded-md w-full relative block px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder='Password'
-                            value={credentials.password}
-                            onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
 

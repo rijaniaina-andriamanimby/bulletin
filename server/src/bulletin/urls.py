@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
-from authentification.views import EmailObtainPairView
+from authentification.views import EmailObtainPairView, LogoutView
 
 urlpatterns = [
     path('', include('authentification.urls')),
@@ -29,4 +29,5 @@ urlpatterns = [
     path('notes/', include('note.urls')),
     path('token/', EmailObtainPairView.as_view(), name ='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name ='token_refresh'),
+    path('deconnexion/', LogoutView.as_view(), name ='logout')
 ]
