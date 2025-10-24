@@ -246,7 +246,7 @@ const Note = () => {
               </div>
 
               {/* Filtrer par matière */}
-              <div className="relative">
+              <div className="relative pr-1">
                 <Book className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <select
                   value={matiereFilter}

@@ -158,16 +158,16 @@ const Eleve = () => {
     <div className='h-screen bg-gray-50 p-6'>
       {/** En tete du page */}
       <div className="max-w-7xl mx-auto">
-        <div className='flex px-3 p-4 items-center justify-between bg-white rounded-2xl shadow-sm border border-gray-200'>
-          <div className="">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Gestion des élèves</h1>
-            <p className="text-gray-600">Gérez et suivez tous vos élèves dans votre établissement en un seul endroit</p>
+        <div className='flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white shadow px-5 py-4 rounded-2xl'>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">Gestion des élèves</h1>
+            <p className="text-gray-600 text-sm md:text-base">Gérez et suivez tous vos élèves dans votre établissement en un seul endroit</p>
           </div>
-          <div className='flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between'>
+          <div className='flex flex-col sm:flex-row gap-3 w-full sm:w-auto'>
             <SearchInput search={searchTerm} setSearch={setSearchTerm} />
             <button
               onClick={() => setOpenModal(true)}
-              className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-sm hover:bg-emerald-700 transition-colors font-medium">
+              className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-lg shadow-sm hover:bg-emerald-700 transition-colors font-medium w-full sm:w-auto">
               <PlusCircle size={20} />
               Ajouter un élève
             </button>

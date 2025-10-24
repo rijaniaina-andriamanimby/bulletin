@@ -13,6 +13,7 @@ const SideBar = () => {
 
   const NavItem = ({ to, label, icon: Icon }) => (
     <NavLink
+    onClick={toggleSidebar}
       to={to}
       end
       className={({ isActive }) => `${baseClass} ${isActive ? activeClass : inactiveClass}`}
@@ -23,7 +24,7 @@ const SideBar = () => {
   )
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-black">
       <aside
         className={`fixed inset-y-0 left-0 z-30 bg-white shadow-xl border-r border-gray-200 transition-transform transform ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:static w-72`}>
         <div className="h-full flex flex-col">
@@ -89,7 +90,7 @@ const SideBar = () => {
 
       {isOpen && (
         <div
-          className="fixed mt-20 inset-0 bg-black bg-opacity-50 z-20 lg:hidden transition-opacity duration-200"
+          className="fixed mt-20 inset-0 bg-opacity-50 z-20 lg:hidden transition-opacity duration-200 backdrop-blur-md"
           onClick={toggleSidebar}
         />
       )}
