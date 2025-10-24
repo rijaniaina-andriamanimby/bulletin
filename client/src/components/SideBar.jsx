@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { Home, Building, Menu, X, Star, GraduationCap, School, BookText, UserPen, BookCheck, BookOpen } from 'lucide-react'
+import { Menu, X, GraduationCap, School, BookText, UserPen, BookOpen, CheckCheck, BookMarked, LayoutDashboard } from 'lucide-react'
 // import logo from '../assets/logo.png';
 
 const SideBar = () => {
@@ -53,12 +53,13 @@ const SideBar = () => {
               <div className="mb-4">
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Navigation</h3>
               </div>
-              <NavItem to="/application" label="Tableau de bord" icon={Home} />
+              <NavItem to="/application" label="Tableau de bord" icon={LayoutDashboard} />
               <NavItem to="classe" label="Classe" icon={School} />
               <NavItem to="eleve" label="Elève" icon={GraduationCap} />
               <NavItem to="enseignant" label="Enseignant" icon={UserPen} />
               <NavItem to="matiere" label="Matière" icon={BookText} />
-              <NavItem to="note" label="Note" icon={BookCheck} />
+              <NavItem to="note" label="Note" icon={CheckCheck} />
+              <NavItem to="bulletin" label="Bulletin" icon={BookMarked} />
             </div>
           </nav>
 

@@ -8,6 +8,7 @@ import Enseignant from './pages/Enseignant'
 import Matiere from './pages/Matiere'
 import Note from './pages/Note'
 import Layout from './layout/Layout'
+import Bulletin from './pages/Bulletin'
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path='enseignant' element={<Enseignant/>}/>
           <Route path='matiere' element={<Matiere/>}/>
           <Route path='note' element={<Note/>}/>
+          <Route path='bulletin' element={<Bulletin/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
